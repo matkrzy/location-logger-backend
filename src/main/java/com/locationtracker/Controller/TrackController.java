@@ -1,18 +1,33 @@
 package com.locationtracker.Controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.locationtracker.Model.Point;
 import com.locationtracker.Model.Track;
+import com.locationtracker.Repository.PointRepository;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.locationtracker.Repository.TrackRepository;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Scanner;
 
 @Controller
 @RequestMapping(path = "/track")
 public class TrackController {
     @Autowired
     public TrackRepository trackRepository;
+
+    @Autowired
+    public PointRepository pointRepository;
 
     @GetMapping(path = "/{id}")
     public @ResponseBody
@@ -37,10 +52,64 @@ public class TrackController {
 
     @DeleteMapping(path = "/{id}")
     public @ResponseBody
-    Track deleteTrack(@PathVariable int id){
+    Track deleteTrack(@PathVariable int id) {
         Track track = trackRepository.findById(id);
         track.setRemoved(true);
         return trackRepository.save(track);
+    }
+
+    @GetMapping(path = "/{id}/points")
+    public @ResponseBody
+    List<Point> getTrackPoints(@PathVariable int id) {
+
+        return pointRepository.findAllByTrackId(id);
+    }
+
+    @PostMapping(path = "/{id}/points")
+    public @ResponseBody
+    void addPointToTrack(@PathVariable int id, @RequestBody Point point) {
+        point.setTrackId(id);
+        pointRepository.save(point);
+    }
+
+    @PostMapping(path = "/{id}/import")
+    public @ResponseBody
+    List<Point> importPointsFromFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
+
+        try {
+            InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+
+            String text = null;
+            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8.name())) {
+                text = scanner.useDelimiter("\\A").next();
+            }
+
+            JSONObject jsonObj = new JSONObject(text);
+            JSONArray pointsArray = jsonObj.getJSONArray("points");
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+
+            for (int i = 0; i < pointsArray.length(); i++) {
+                JSONObject point = pointsArray.getJSONObject(i);
+                point.remove("distance");
+                Point mappedPoint = objectMapper.readValue(point.toString(), Point.class);
+                mappedPoint.setTrackId(id);
+                pointRepository.save(mappedPoint);
+            }
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+
+        return pointRepository.findAllByTrackId(id);
+    }
+
+    @GetMapping(path = "/{id}/navigate")
+    public @ResponseBody
+    Point getNavigationPoint(@PathVariable int id) {
+        List<Point> points = pointRepository.findAllByTrackId(id);
+
+        return points.get(points.size() - 1);
     }
 
 
