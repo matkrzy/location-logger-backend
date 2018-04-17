@@ -7,44 +7,36 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @Controller
+@RequestMapping(path ="/device")
 public class DeviceController {
     @Autowired
     public DeviceRepository deviceRepository;
 
 
-    @GetMapping(path = "devices")
-    public @ResponseBody
-    List<Device> getAllDevices() {
-
-        return deviceRepository.findAll();
-    }
-
-    @PostMapping(path = "/device")
+    @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     Device addDevice(@RequestBody Device device) {
 
         return this.deviceRepository.save(new Device(device.getName(), device.getUserId()));
     }
 
-    @GetMapping(path = "/device/{id}")
+    @GetMapping(path = "/{id}")
     public @ResponseBody
     Device getDevice(@PathVariable int id) {
 
         return deviceRepository.findById(id);
     }
 
-    @PutMapping(path = "/device/{id}")
+    @PutMapping(path = "/{id}")
     public @ResponseBody
     Device updateDevice(@RequestBody Device device) {
 
         return deviceRepository.save(device);
     }
 
-    @DeleteMapping(path = "/device/{id}")
+    @DeleteMapping(path = "/{id}")
     public @ResponseBody
     Device deleteDevice(@PathVariable int id){
         Device device = deviceRepository.findById(id);
