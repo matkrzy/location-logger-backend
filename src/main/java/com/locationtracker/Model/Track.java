@@ -1,6 +1,7 @@
 package com.locationtracker.Model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Track {
@@ -17,10 +18,45 @@ public class Track {
     @Column(name = "device_id")
     private int deviceId;
 
-    private Boolean removed = false;
+    private Boolean removed;
 
-    public Track() {
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date", columnDefinition="DATETIME")
+    private Date date;
+
+    private Double distance;
+
+    @Temporal(TemporalType.TIME)
+    @Column(name = "duration", columnDefinition="TIME")
+    private Date duration;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_time", columnDefinition="DATETIME")
+    private Date startTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_time", columnDefinition="DATETIME")
+    private Date endTime;
+
+    @Column(name = "min_speed")
+    private Double minSpeed;
+
+    @Column(name = "max_speed")
+    private Double maxSpeed;
+
+    @Column(name = "avg_speed")
+    private Double avgSpeed;
+
+    @Column(name = "min_altitude")
+    private Double minAltitude;
+
+    @Column(name = "max_altitude")
+    private Double maxAltitude;
+
+    @Column(name = "avg_altitude")
+    private Double avgAltitude;
+
+    public Track(){}
 
     public Track(String name, int userId, int deviceId){
         this.name = name;
@@ -48,7 +84,95 @@ public class Track {
         return removed;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public Date getDuration() {
+        return duration;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public Double getMinSpeed() {
+        return minSpeed;
+    }
+
+    public Double getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public Double getAvgSpeed() {
+        return avgSpeed;
+    }
+
+    public Double getMinAltitude() {
+        return minAltitude;
+    }
+
+    public Double getMaxAltitude() {
+        return maxAltitude;
+    }
+
+    public Double getAvgAltitude() {
+        return avgAltitude;
+    }
+
     public void setRemoved(Boolean removed) {
         this.removed = removed;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    public void setDuration(Date duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setMinSpeed(Double minSpeed) {
+        this.minSpeed = minSpeed;
+    }
+
+    public void setMaxSpeed(Double maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public void setAvgSpeed(Double avgSpeed) {
+        this.avgSpeed = avgSpeed;
+    }
+
+    public void setMinAltitude(Double minAltitude) {
+        this.minAltitude = minAltitude;
+    }
+
+    public void setMaxAltitude(Double maxAltitude) {
+        this.maxAltitude = maxAltitude;
+    }
+
+    public void setAvgAltitude(Double avgAltitude) {
+        this.avgAltitude = avgAltitude;
     }
 }
