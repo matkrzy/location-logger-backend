@@ -1,6 +1,7 @@
 package com.locationtracker.Model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Point {
@@ -11,17 +12,23 @@ public class Point {
     @Column(name = "track_id")
     private int trackId;
 
-    private String timestamp;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "timestamp", columnDefinition="DATETIME")
+    private Date timestamp;
 
-    private float latitude;
+    private Double latitude;
 
-    private float longitude;
+    private Double longitude;
 
-    private float altitude;
+    private Double altitude = 0.0;
 
-    private float speed;
+    private Double speed;
 
-    private int direction;
+    private Double distance;
+
+    @Temporal(TemporalType.TIME)
+    @Column(name = "duration", columnDefinition="TIME")
+    private Date duration;
 
     public Point(){}
 
@@ -33,31 +40,43 @@ public class Point {
         return trackId;
     }
 
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public float getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public float getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public float getAltitude() {
+    public Double getAltitude() {
         return altitude;
     }
 
-    public float getSpeed() {
+    public Double getSpeed() {
         return speed;
     }
 
-    public int getDirection() {
-        return direction;
+    public Double getDistance() {
+        return distance;
+    }
+
+    public Date getDuration() {
+        return duration;
     }
 
     public void setTrackId(int trackId) {
         this.trackId = trackId;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    public void setDuration(Date duration) {
+        this.duration = duration;
     }
 }
