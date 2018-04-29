@@ -1,4 +1,4 @@
-package com.locationtracker.Model;
+package com.locationtracker.model;
 
 import javax.persistence.*;
 
@@ -9,7 +9,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String email;
+    private String username;
 
     @Column(name = "password_hash")
     private String password;
@@ -18,12 +18,18 @@ public class User {
 
     public User(){};
 
+    public User(User user){
+        username = user.username;
+        password = user.password;
+        removed = false;
+    };
+
     public int getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -38,8 +44,8 @@ public class User {
         this.id = id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {

@@ -1,10 +1,10 @@
-package com.locationtracker.Controller;
+package com.locationtracker.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.locationtracker.Model.Point;
-import com.locationtracker.Model.Track;
-import com.locationtracker.Repository.PointRepository;
+import com.locationtracker.model.Point;
+import com.locationtracker.model.Track;
+import com.locationtracker.repository.PointRepository;
 import com.locationtracker.utils.Utils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.locationtracker.Repository.TrackRepository;
+import com.locationtracker.repository.TrackRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;

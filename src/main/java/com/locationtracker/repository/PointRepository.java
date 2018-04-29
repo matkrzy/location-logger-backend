@@ -1,6 +1,6 @@
-package com.locationtracker.Repository;
+package com.locationtracker.repository;
 
-import com.locationtracker.Model.Point;
+import com.locationtracker.model.Point;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
