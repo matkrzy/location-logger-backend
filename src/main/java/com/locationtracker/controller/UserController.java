@@ -2,20 +2,17 @@ package com.locationtracker.controller;
 
 import com.locationtracker.model.User;
 import com.locationtracker.repository.UserRepository;
+import com.locationtracker.utils.JsonResponse;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequestMapping(path = "/user")
@@ -27,21 +24,26 @@ public class UserController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-
-    @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody User user) {
+    @PostMapping(path = "/sign-up", produces = "application/json; charset=utf-8")
+    public @ResponseBody
+    ResponseEntity<String> signUp(@RequestBody User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        JsonResponse response = new JsonResponse();
 
-        JSONObject response = new JSONObject();
+        User userHelper = null;
+
         try {
-            response.append("message", "user created");
-            response.append("status", HttpStatus.OK);
-        }catch(Exception e){
-            System.out.print(e.toString());
+            userHelper = userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            response.setMessageError("User is already exist. Please provide another username");
         }
 
-        return new ResponseEntity(response.toString(), HttpStatus.OK);
+        if (userHelper != null) {
+            response.setStatus(HttpStatus.CREATED);
+            response.setMessage("User created");
+        }
+
+        return new ResponseEntity(response.getMessageAsString(), response.getStatus());
     }
 
 
