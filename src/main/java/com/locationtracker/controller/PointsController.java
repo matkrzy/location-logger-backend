@@ -1,7 +1,7 @@
-package com.locationtracker.Controller;
+package com.locationtracker.controller;
 
-import com.locationtracker.Model.Point;
-import com.locationtracker.Repository.PointRepository;
+import com.locationtracker.model.Point;
+import com.locationtracker.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Controller;

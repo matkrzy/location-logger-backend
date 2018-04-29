@@ -1,9 +1,8 @@
-package com.locationtracker.Repository;
+package com.locationtracker.repository;
 
-import com.locationtracker.Model.Track;
+import com.locationtracker.model.Track;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Date;
 import java.util.List;
 
 public interface TrackRepository extends CrudRepository<Track,Long> {

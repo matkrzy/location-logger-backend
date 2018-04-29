@@ -1,7 +1,6 @@
 package com.locationtracker.utils;
 
-import com.locationtracker.Model.Point;
-import org.codehaus.jettison.json.JSONObject;
+import com.locationtracker.model.Point;
 
 import java.util.Date;
 
