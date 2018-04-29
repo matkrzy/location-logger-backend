@@ -1,13 +1,13 @@
-package com.locationtracker.Controller;
+package com.locationtracker.controller;
 
-import com.locationtracker.Model.Track;
+import com.locationtracker.model.Track;
 import org.springframework.boot.SpringApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.locationtracker.Repository.TrackRepository;
+import com.locationtracker.repository.TrackRepository;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 

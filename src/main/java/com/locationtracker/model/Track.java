@@ -1,4 +1,4 @@
-package com.locationtracker.Model;
+package com.locationtracker.model;
 
 import javax.persistence.*;
 import java.util.Date;
