@@ -66,6 +66,30 @@ public class JsonResponse {
         }
     }
 
+    public void addFieldtoResponse(String key, String value) {
+        try {
+            this.response.put(key, value);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
+    public void addFieldtoResponse(String key, int value) {
+        try {
+            this.response.put(key, value);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
+    public void addFieldtoResponse(String key, boolean value) {
+        try {
+            this.response.put(key, value);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
     public JSONObject getMessageAsObject() {
         return this.response;
     }
@@ -74,15 +98,15 @@ public class JsonResponse {
         return this.response.toString();
     }
 
-    public HttpStatus getStatus(){
+    public HttpStatus getStatus() {
         return this.status;
     }
 
-    public String getStatusAsString(){
-        return  this.status.toString();
+    public String getStatusAsString() {
+        return this.status.toString();
     }
 
-    public ResponseEntity getResponseAsResponseEntity(){
+    public ResponseEntity getResponseAsResponseEntity() {
         return new ResponseEntity(this.getMessageAsString(), this.getStatus());
     }
 

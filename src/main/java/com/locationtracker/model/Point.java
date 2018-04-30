@@ -13,12 +13,14 @@ public class Point {
     private int trackId;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "timestamp", columnDefinition="DATETIME")
+    @Column(name = "timestamp", columnDefinition = "DATETIME")
     private Date timestamp;
 
-    private Double latitude;
+    @Column(name = "latitude")
+    private Double lat;
 
-    private Double longitude;
+    @Column(name = "longitude")
+    private Double lng;
 
     private Double altitude = 0.0;
 
@@ -27,10 +29,11 @@ public class Point {
     private Double distance;
 
     @Temporal(TemporalType.TIME)
-    @Column(name = "duration", columnDefinition="TIME")
+    @Column(name = "duration", columnDefinition = "TIME")
     private Date duration;
 
-    public Point(){}
+    public Point() {
+    }
 
     public Long getId() {
         return id;
@@ -44,12 +47,12 @@ public class Point {
         return timestamp;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public Double getLat() {
+        return lat;
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public Double getLng() {
+        return lng;
     }
 
     public Double getAltitude() {
