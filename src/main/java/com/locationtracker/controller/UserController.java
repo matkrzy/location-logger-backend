@@ -24,7 +24,7 @@ public class UserController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    @PostMapping(path = "/sign-up", produces = "application/json; charset=utf-8")
+    @PostMapping(path = "/register", produces = "application/json; charset=utf-8")
     public @ResponseBody
     ResponseEntity<String> signUp(@RequestBody User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

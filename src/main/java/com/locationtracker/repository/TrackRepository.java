@@ -10,6 +10,8 @@ public interface TrackRepository extends CrudRepository<Track,Long> {
 
     List<Track> findByRemovedIsFalse();
 
+    List<Track> findByRemovedIsFalseAndUserId(int id);
+
     Track findById(int id);
 
     Track save(Track track);

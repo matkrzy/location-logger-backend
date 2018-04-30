@@ -80,7 +80,7 @@ public class Track {
         return deviceId;
     }
 
-    public Boolean getRemoved() {
+    public Boolean isRemoved() {
         return removed;
     }
 
