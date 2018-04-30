@@ -14,6 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 import static com.locationtracker.security.SecurityConstants.SIGN_UP_URL;
 
 @EnableWebSecurity
@@ -22,7 +24,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserRepository userRepository;
 
-    public WebSecurity(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder,UserRepository userRepository) {
+    public WebSecurity(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
@@ -47,8 +49,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.applyPermitDefaultValues();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","DELETE"));
+
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

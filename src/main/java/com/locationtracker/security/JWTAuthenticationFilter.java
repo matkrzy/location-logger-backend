@@ -78,6 +78,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             responseObject.put("id", user.getId());
             responseObject.put("username", user.getUsername());
             responseObject.put("removed", user.isRemoved());
+            responseObject.put("token", token);
 
         }catch (Exception e){
 

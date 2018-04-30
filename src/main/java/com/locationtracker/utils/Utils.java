@@ -13,11 +13,11 @@ public class Utils {
         int R = 6378137;
         Double d = 0.0;
         try {
-            Double p1Lat = start.getLatitude();
-            Double p1Lng = start.getLongitude();
+            Double p1Lat = start.getLat();
+            Double p1Lng = start.getLng();
 
-            Double p2Lat = end.getLatitude();
-            Double p2Lng = end.getLongitude();
+            Double p2Lat = end.getLat();
+            Double p2Lng = end.getLng();
 
             Double dLat = rad(p2Lat - p1Lat);
             Double dLong = rad(p2Lng - p1Lng);
