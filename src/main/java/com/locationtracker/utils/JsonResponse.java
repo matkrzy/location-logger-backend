@@ -2,6 +2,7 @@ package com.locationtracker.utils;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class JsonResponse {
     private JSONObject response = null;
@@ -77,8 +78,12 @@ public class JsonResponse {
         return this.status;
     }
 
-    public String getMessage(){
-        return  null;
+    public String getStatusAsString(){
+        return  this.status.toString();
+    }
+
+    public ResponseEntity getResponseAsResponseEntity(){
+        return new ResponseEntity(this.getMessageAsString(), this.getStatus());
     }
 
 }

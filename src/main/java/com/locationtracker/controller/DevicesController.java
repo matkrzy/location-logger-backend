@@ -1,9 +1,12 @@
 package com.locationtracker.controller;
 
 import com.locationtracker.model.Device;
+import com.locationtracker.model.User;
 import com.locationtracker.repository.DeviceRepository;
+import com.locationtracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +21,16 @@ public class DevicesController {
     @Autowired
     public DeviceRepository deviceRepository;
 
+    @Autowired
+    public UserRepository userRepository;
+
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
-    List<Device> getAllActiveDevices() {
+    List<Device> getAllActiveDevices(Authentication auth) {
+        String username = auth.getPrincipal().toString();
+        User user = userRepository.findByUsername(username);
 
-        return deviceRepository.findByRemovedIsFalse();
+        return deviceRepository.findByRemovedIsFalseAndUserId(user.getId());
     }
 
     @GetMapping(path = "/all")

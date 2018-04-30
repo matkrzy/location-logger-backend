@@ -67,6 +67,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = Jwts.builder()
                 .setSubject(username)
                 .claim("password", user.getPassword())
+                .claim("id", user.getId())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
@@ -76,6 +77,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             responseObject.put("id", user.getId());
             responseObject.put("username", user.getUsername());
+            responseObject.put("removed", user.isRemoved());
 
         }catch (Exception e){
 

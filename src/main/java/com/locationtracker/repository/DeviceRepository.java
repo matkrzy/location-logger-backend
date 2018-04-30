@@ -14,6 +14,8 @@ public interface DeviceRepository extends CrudRepository<Device, Long> {
 
     Device findById(int id);
 
+    List<Device> findByUserId(int id);
+
     Device save(Device device);
 
 }
