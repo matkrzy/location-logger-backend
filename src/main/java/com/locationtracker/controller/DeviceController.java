@@ -64,7 +64,8 @@ public class DeviceController {
 
 
         if (checkDevice.getUserId() == user.getId()) {
-            Device dev = deviceRepository.save(device);
+            checkDevice.setName(device.getName());
+            Device dev = deviceRepository.save(checkDevice);
             return new ResponseEntity(dev, HttpStatus.OK);
         } else {
             response.setMessageError("The device is not assigned to you");
@@ -86,10 +87,12 @@ public class DeviceController {
 
         if (device.getUserId() == user.getId()) {
             device.setRemoved(true);
-            device = deviceRepository.save(device);
+            deviceRepository.save(device);
 
-            return new ResponseEntity(device, HttpStatus.OK);
-        } else {
+            response.setMessage("Device has been removed");
+
+            return response.getResponseAsResponseEntity();
+            } else {
             response.setMessageError("The device is not assigned to you");
             return response.getResponseAsResponseEntity();
         }

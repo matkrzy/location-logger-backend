@@ -62,4 +62,12 @@ public class Device {
     public void setRemoved(boolean removed) {
         this.removed = removed;
     }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }
