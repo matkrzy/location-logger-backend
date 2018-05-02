@@ -4,19 +4,20 @@ import com.locationtracker.model.Device;
 import com.locationtracker.model.User;
 import com.locationtracker.repository.DeviceRepository;
 import com.locationtracker.repository.UserRepository;
+import com.locationtracker.utils.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
-@RequestMapping(path ="/devices")
+@RequestMapping(path = "/devices")
 public class DevicesController {
     @Autowired
     public DeviceRepository deviceRepository;
@@ -31,6 +32,28 @@ public class DevicesController {
         User user = userRepository.findByUsername(username);
 
         return deviceRepository.findByRemovedIsFalseAndUserId(user.getId());
+    }
+
+    @PostMapping
+    public @ResponseBody
+    ResponseEntity<?> addDevice(@RequestBody Device device, Authentication auth) {
+        JsonResponse response = new JsonResponse();
+
+        String username = auth.getPrincipal().toString();
+        User user = userRepository.findByUsername(username);
+
+        UUID uuid = UUID.randomUUID();
+
+        device.setUserId(user.getId());
+        device.setUuid(uuid.toString());
+        Device saved = deviceRepository.save(device);
+
+        if (saved != null) {
+            return new ResponseEntity(saved, HttpStatus.OK);
+        } else {
+            response.setMessageError("Something went wrong!");
+            return response.getResponseAsResponseEntity();
+        }
     }
 
     @GetMapping(path = "/all")

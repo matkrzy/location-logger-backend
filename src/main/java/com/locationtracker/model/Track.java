@@ -1,6 +1,9 @@
 package com.locationtracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.Date;
 
 @Entity
@@ -18,24 +21,24 @@ public class Track {
     @Column(name = "device_id")
     private int deviceId;
 
-    private Boolean removed;
+    private Boolean removed = false;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date", columnDefinition="DATETIME")
+    @Column(name = "date", columnDefinition = "DATETIME")
     private Date date;
 
     private Double distance;
 
     @Temporal(TemporalType.TIME)
-    @Column(name = "duration", columnDefinition="TIME")
+    @Column(name = "duration", columnDefinition = "TIME")
     private Date duration;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_time", columnDefinition="DATETIME")
+    @Column(name = "start_time", columnDefinition = "DATETIME")
     private Date startTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_time", columnDefinition="DATETIME")
+    @Column(name = "end_time", columnDefinition = "DATETIME")
     private Date endTime;
 
     @Column(name = "min_speed")
@@ -58,7 +61,7 @@ public class Track {
 
     public Track(){}
 
-    public Track(String name, int userId, int deviceId){
+    public Track(String name, int userId, int deviceId) {
         this.name = name;
         this.userId = userId;
         this.deviceId = deviceId;
@@ -128,6 +131,14 @@ public class Track {
         return avgAltitude;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public void setRemoved(Boolean removed) {
         this.removed = removed;
     }
@@ -174,5 +185,9 @@ public class Track {
 
     public void setAvgAltitude(Double avgAltitude) {
         this.avgAltitude = avgAltitude;
+    }
+
+    public void setDeviceId(int deviceId) {
+        this.deviceId = deviceId;
     }
 }

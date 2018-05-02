@@ -46,4 +46,15 @@ public class Utils {
 
         return d;
     }
+
+    public Date getTimeDiffInMinutes(Point start, Point end, Point add) {
+
+        long diff = end.getTimestamp().getTime() - start.getTimestamp().getTime();
+        diff += start.getTimestamp().getTime() - add.getTimestamp().getTime();
+        long timeZoneOffset = 3600000;
+        Date d = new Date();
+        d.setTime(diff - timeZoneOffset);
+
+        return d;
+    }
 }

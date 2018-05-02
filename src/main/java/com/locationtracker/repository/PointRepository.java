@@ -13,4 +13,6 @@ public interface PointRepository extends CrudRepository<Point,Long> {
     Point findFirstByTrackId(int id);
 
     Point findByTrackIdOrderByIdDesc(int id);
+
+    Integer removeAllByTrackId(int id);
 }
