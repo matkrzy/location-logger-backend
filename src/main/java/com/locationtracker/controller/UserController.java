@@ -3,7 +3,6 @@ package com.locationtracker.controller;
 import com.locationtracker.model.User;
 import com.locationtracker.repository.UserRepository;
 import com.locationtracker.utils.JsonResponse;
-import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.dao.DataIntegrityViolationException;

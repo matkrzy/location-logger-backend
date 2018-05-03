@@ -3,7 +3,6 @@ package com.locationtracker.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.Date;
 
 @Entity
