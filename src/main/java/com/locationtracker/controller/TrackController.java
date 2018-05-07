@@ -1,11 +1,13 @@
 package com.locationtracker.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.locationtracker.model.Point;
 import com.locationtracker.model.Track;
 import com.locationtracker.model.User;
 import com.locationtracker.repository.PointRepository;
 import com.locationtracker.repository.UserRepository;
 import com.locationtracker.utils.JsonResponse;
+import org.codehaus.jettison.json.JSONArray;
 import org.springframework.boot.SpringApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +51,40 @@ public class TrackController {
         }
     }
 
+    @GetMapping(path = "/{id}/details", produces = "application/json; charset=utf-8")
+    public @ResponseBody
+    ResponseEntity<?> getTrackDetails(@PathVariable int id, Authentication auth) {
+        JsonResponse response = new JsonResponse();
+
+        String username = auth.getPrincipal().toString();
+        User user = userRepository.findByUsername(username);
+
+        Track track = trackRepository.findById(id);
+        List<Point> points = pointRepository.findAllByTrackId(id);
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        if (track.getUserId() == user.getId()) {
+            try {
+                response.setStatus(HttpStatus.OK);
+                String jsonInString = mapper.writeValueAsString(track);
+                response.convertToObjectFromString(jsonInString);
+
+                jsonInString = mapper.writeValueAsString(points);
+                JSONArray jsonArr = new JSONArray(jsonInString);
+
+                response.addFieldtoResponse("points", jsonArr);
+            } catch (Exception e) {
+                response.setMessageError("Something went wrong");
+            }
+
+            return response.getResponseAsResponseEntity();
+        } else {
+            response.setMessageError("You are not owner of this track");
+            return response.getResponseAsResponseEntity();
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     public @ResponseBody
     ResponseEntity<?> addTrack(@RequestBody Track track, Authentication auth) {
@@ -84,6 +120,7 @@ public class TrackController {
             return response.getResponseAsResponseEntity();
         }
     }
+
     @Transactional
     @DeleteMapping(path = "/{id}", produces = "application/json; charset=utf-8")
     public @ResponseBody

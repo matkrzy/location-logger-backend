@@ -1,5 +1,6 @@
 package com.locationtracker.utils;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,22 @@ public class JsonResponse {
 
     public JsonResponse() {
         this.response = new JSONObject();
+    }
+
+    public JsonResponse(String raw) {
+        try {
+            this.response = new JSONObject(raw);
+        }catch(Exception e){
+            System.out.print(e.toString());
+        }
+    }
+
+    public void convertToObjectFromString(String raw){
+        try {
+            this.response = new JSONObject(raw);
+        }catch(Exception e){
+            System.out.print(e.toString());
+        }
     }
 
     public void setStatus(HttpStatus status) {
@@ -90,6 +107,14 @@ public class JsonResponse {
         }
     }
 
+    public void addFieldtoResponse(String key, JSONArray value) {
+        try {
+            this.response.put(key, value);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
     public JSONObject getMessageAsObject() {
         return this.response;
     }
@@ -109,5 +134,6 @@ public class JsonResponse {
     public ResponseEntity getResponseAsResponseEntity() {
         return new ResponseEntity(this.getMessageAsString(), this.getStatus());
     }
+
 
 }
