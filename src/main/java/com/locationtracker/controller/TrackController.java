@@ -35,24 +35,6 @@ public class TrackController {
 
     @GetMapping(path = "/{id}", produces = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity<?> getTrackById(@PathVariable int id, Authentication auth) {
-        JsonResponse response = new JsonResponse();
-
-        String username = auth.getPrincipal().toString();
-        User user = userRepository.findByUsername(username);
-
-        Track track = trackRepository.findById(id);
-
-        if (track.getUserId() == user.getId()) {
-            return new ResponseEntity(track, HttpStatus.OK);
-        } else {
-            response.setMessageError("You are not owner of this track");
-            return response.getResponseAsResponseEntity();
-        }
-    }
-
-    @GetMapping(path = "/{id}/details", produces = "application/json; charset=utf-8")
-    public @ResponseBody
     ResponseEntity<?> getTrackDetails(@PathVariable int id, Authentication auth) {
         JsonResponse response = new JsonResponse();
 
