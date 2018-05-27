@@ -11,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @Controller
@@ -26,16 +29,22 @@ public class UserController {
 
     @PostMapping(path = "/register", produces = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity<String> signUp(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    ResponseEntity<String> signUp(@Valid @RequestBody User user, final BindingResult bindingResult) {
         JsonResponse response = new JsonResponse();
+
+        if (bindingResult.hasErrors()) {
+            response.setErrorsForm(bindingResult);
+
+            return response.getResponseAsResponseEntity();
+        }
 
         User userHelper = null;
 
         try {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             userHelper = userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            response.setMessageError("User is already exist. Please provide another username");
+            response.setMessageError("User already exists. Please provide another username");
         }
 
         if (userHelper != null) {
@@ -60,7 +69,6 @@ public class UserController {
             response.addFieldtoResponse("id", user.getId());
             response.addFieldtoResponse("removed", user.isRemoved());
         } else {
-            response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessageError("Cannot identify user");
         }
 

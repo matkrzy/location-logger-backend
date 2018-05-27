@@ -1,6 +1,11 @@
 package com.locationtracker.model;
 
+import org.springframework.beans.factory.annotation.Required;
+
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class User {
@@ -9,8 +14,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Email
+    @NotBlank
+    @NotNull
     private String username;
 
+    @NotNull
+    @NotBlank
     @Column(name = "password_hash")
     private String password;
 
