@@ -4,6 +4,8 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 public class JsonResponse {
     private JSONObject response = null;
@@ -17,15 +19,15 @@ public class JsonResponse {
     public JsonResponse(String raw) {
         try {
             this.response = new JSONObject(raw);
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.print(e.toString());
         }
     }
 
-    public void convertToObjectFromString(String raw){
+    public void convertToObjectFromString(String raw) {
         try {
             this.response = new JSONObject(raw);
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.print(e.toString());
         }
     }
@@ -50,10 +52,28 @@ public class JsonResponse {
     }
 
     public void setMessageError(String message) {
-        this.setStatus(HttpStatus.BAD_REQUEST);
+        if (this.status == null)
+            this.setStatus(HttpStatus.BAD_REQUEST);
 
         try {
             this.response.put("error", message);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
+    public void setErrorsForm(final BindingResult bindingResult) {
+        if (this.status == null)
+            this.setStatus(HttpStatus.BAD_REQUEST);
+
+        try {
+            JSONObject errors = new JSONObject();
+
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+
+            this.response.put("errors", errors);
         } catch (Exception e) {
             System.out.print(e.toString());
         }

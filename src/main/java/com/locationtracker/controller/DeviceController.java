@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,9 +27,23 @@ public class DeviceController {
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
-    Device addDevice(@RequestBody Device device) {
+    ResponseEntity addDevice(@RequestBody Device device, final BindingResult bindingResult) {
+        JsonResponse response = new JsonResponse();
 
-        return this.deviceRepository.save(new Device(device.getName(), device.getUserId()));
+        if (bindingResult.hasErrors()) {
+            response.setErrorsForm(bindingResult);
+
+            return response.getResponseAsResponseEntity();
+        }
+
+        Device dev = this.deviceRepository.save(new Device(device.getName(), device.getUserId()));
+
+        if (dev != null) {
+            response.setMessageError("An error occurred");
+            return response.getResponseAsResponseEntity();
+        }else{
+            return new ResponseEntity(dev,HttpStatus.CREATED);
+        }
     }
 
     @GetMapping(path = "/{id}", produces = "application/json; charset=utf-8")
@@ -52,18 +67,28 @@ public class DeviceController {
 
     @PutMapping(path = "/{id}", produces = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity<?> updateDevice(@RequestBody Device device, Authentication auth) {
-
+    ResponseEntity<?> updateDevice(@RequestBody Device device, @PathVariable int id, Authentication auth, final BindingResult bindingResult) {
         JsonResponse response = new JsonResponse();
+
+        if (bindingResult.hasErrors()) {
+            response.setErrorsForm(bindingResult);
+
+            return response.getResponseAsResponseEntity();
+        }
 
         String username = auth.getPrincipal().toString();
         User user = userRepository.findByUsername(username);
-        Device checkDevice = deviceRepository.findById(device.getId());
+        Device updatedDevice = deviceRepository.findById(id);
 
 
-        if (checkDevice.getUserId() == user.getId()) {
-            checkDevice.setName(device.getName());
-            Device dev = deviceRepository.save(checkDevice);
+        if(device.getId() != id){
+            response.setMessageError("Device id mismatch");
+            return response.getResponseAsResponseEntity();
+        }
+
+        if (updatedDevice.getUserId() == user.getId()) {
+            updatedDevice.setName(device.getName());
+            Device dev = deviceRepository.save(updatedDevice);
             return new ResponseEntity(dev, HttpStatus.OK);
         } else {
             response.setMessageError("The device is not assigned to you");
@@ -86,11 +111,10 @@ public class DeviceController {
         if (device.getUserId() == user.getId()) {
             device.setRemoved(true);
             deviceRepository.save(device);
-
             response.setMessage("Device has been removed");
 
             return response.getResponseAsResponseEntity();
-            } else {
+        } else {
             response.setMessageError("The device is not assigned to you");
             return response.getResponseAsResponseEntity();
         }

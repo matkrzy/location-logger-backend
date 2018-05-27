@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,32 +37,38 @@ public class DevicesController {
 
     @PostMapping
     public @ResponseBody
-    ResponseEntity<?> addDevice(@RequestBody Device device, Authentication auth) {
+    ResponseEntity<?> addDevice(@RequestBody Device device, final BindingResult bindingResult, Authentication auth) {
         JsonResponse response = new JsonResponse();
+
+        if (bindingResult.hasErrors()) {
+            response.setErrorsForm(bindingResult);
+
+            return response.getResponseAsResponseEntity();
+        }
 
         String username = auth.getPrincipal().toString();
         User user = userRepository.findByUsername(username);
 
-        UUID uuid = UUID.randomUUID();
-
         device.setUserId(user.getId());
-        device.setUuid(uuid.toString());
+        device.setUuid(UUID.randomUUID().toString());
         Device saved = deviceRepository.save(device);
 
         if (saved != null) {
             return new ResponseEntity(saved, HttpStatus.OK);
         } else {
-            response.setMessageError("Something went wrong!");
+            response.setMessageError("An error occurred");
             return response.getResponseAsResponseEntity();
         }
     }
 
-    @GetMapping(path = "/all")
-    public @ResponseBody
-    List<Device> getAllDevices() {
-
-        return deviceRepository.findAll();
-    }
+    //TODO fix when roles will be available
+    //
+//    @GetMapping(path = "/all")
+//    public @ResponseBody
+//    List<Device> getAllDevices() {
+//
+//        return deviceRepository.findAll();
+//    }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(DevicesController.class, args);
