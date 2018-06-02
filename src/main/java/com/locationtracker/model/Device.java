@@ -3,6 +3,8 @@ package com.locationtracker.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
@@ -13,8 +15,11 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank
+    @NotNull
     private String name;
 
+    @NotNull
     private int userId;
 
     @GeneratedValue(generator = "hibernate-uuid")
