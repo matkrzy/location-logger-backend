@@ -1,5 +1,6 @@
 package com.locationtracker;
 
+import com.locationtracker.service.TracksService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,11 @@ public class LocationtrackerApplication {
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public TracksService tracksService() {
+		return new TracksService();
 	}
 
 

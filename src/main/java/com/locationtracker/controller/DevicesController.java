@@ -5,6 +5,7 @@ import com.locationtracker.model.User;
 import com.locationtracker.repository.DeviceRepository;
 import com.locationtracker.repository.UserRepository;
 import com.locationtracker.utils.JsonResponse;
+import com.locationtracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;

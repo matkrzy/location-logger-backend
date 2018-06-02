@@ -7,6 +7,7 @@ import com.locationtracker.model.User;
 import com.locationtracker.repository.PointRepository;
 import com.locationtracker.repository.UserRepository;
 import com.locationtracker.utils.JsonResponse;
+import com.locationtracker.utils.Utils;
 import org.codehaus.jettison.json.JSONArray;
 import org.springframework.boot.SpringApplication;
 import org.springframework.beans.factory.annotation.Autowired;

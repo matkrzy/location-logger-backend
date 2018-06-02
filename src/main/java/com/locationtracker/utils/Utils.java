@@ -1,10 +1,19 @@
 package com.locationtracker.utils;
 
 import com.locationtracker.model.Point;
+import com.locationtracker.model.User;
+import com.locationtracker.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Service
 public class Utils {
+    @Autowired
+    public UserRepository userRepository;
+
     private Double rad(Double x) {
         return x * Math.PI / 180;
     }
