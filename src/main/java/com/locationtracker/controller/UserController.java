@@ -3,6 +3,7 @@ package com.locationtracker.controller;
 import com.locationtracker.model.User;
 import com.locationtracker.repository.UserRepository;
 import com.locationtracker.utils.JsonResponse;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -44,7 +45,16 @@ public class UserController {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             userHelper = userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            response.setMessageError("User already exists. Please provide another username");
+            JSONObject errors = new JSONObject();
+            try {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                errors.put("username", "User already exists. Please provide another username");
+                response.addFieldtoResponse("errors", errors);
+            }catch (Exception ex){
+                System.out.print(ex.toString());
+            }
+
+            return response.getResponseAsResponseEntity();
         }
 
         if (userHelper != null) {

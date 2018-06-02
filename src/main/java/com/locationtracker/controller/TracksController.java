@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import com.locationtracker.repository.TrackRepository;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Controller
@@ -52,6 +53,7 @@ public class TracksController {
         return trackRepository.findAll();
     }
 
+    @Transactional
     @PostMapping(path = "/import", produces = "application/json; charset=utf-8")
     public @ResponseBody
     ResponseEntity<?> importPointsFromFile(

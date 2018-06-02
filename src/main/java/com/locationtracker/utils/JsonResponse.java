@@ -135,6 +135,14 @@ public class JsonResponse {
         }
     }
 
+    public void addFieldtoResponse(String key, JSONObject value) {
+        try {
+            this.response.put(key, value);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
     public JSONObject getMessageAsObject() {
         return this.response;
     }
