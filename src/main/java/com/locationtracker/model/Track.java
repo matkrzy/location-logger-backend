@@ -2,6 +2,7 @@ package com.locationtracker.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,6 +29,7 @@ public class Track {
     @Column(name = "date", columnDefinition = "DATETIME")
     private Date date;
 
+    @NumberFormat(pattern="#.##")
     private Double distance;
 
     @JsonFormat(pattern="H:mm")
@@ -43,21 +45,27 @@ public class Track {
     @Column(name = "end_time", columnDefinition = "DATETIME")
     private Date endTime;
 
+    @NumberFormat(pattern="#.##")
     @Column(name = "min_speed")
     private Double minSpeed;
 
+    @NumberFormat(pattern="#.##")
     @Column(name = "max_speed")
     private Double maxSpeed;
 
+    @NumberFormat(pattern="#.##")
     @Column(name = "avg_speed")
     private Double avgSpeed;
 
+    @NumberFormat(pattern="#.##")
     @Column(name = "min_altitude")
     private Double minAltitude;
 
+    @NumberFormat(pattern="#.##")
     @Column(name = "max_altitude")
     private Double maxAltitude;
 
+    @NumberFormat(pattern="#.##")
     @Column(name = "avg_altitude")
     private Double avgAltitude;
 
