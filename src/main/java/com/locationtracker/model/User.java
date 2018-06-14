@@ -1,6 +1,7 @@
 package com.locationtracker.model;
 
-import org.springframework.beans.factory.annotation.Required;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.locationtracker.enums.UserRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -17,21 +18,29 @@ public class User {
     @Email
     @NotBlank
     @NotNull
+    @Column(name = "username", unique = true)
     private String username;
 
     @NotNull
     @NotBlank
     @Column(name = "password_hash")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private boolean removed;
+    private boolean active;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", columnDefinition="enum('USER','ADMIN')")
+    private UserRole role;
 
     public User(){};
 
     public User(User user){
         username = user.username;
         password = user.password;
-        removed = false;
+        role = UserRole.USER;
+        active = false;
     };
 
     public int getId() {
@@ -46,8 +55,8 @@ public class User {
         return password;
     }
 
-    public boolean isRemoved() {
-        return removed;
+    public boolean isActive() {
+        return active;
     }
 
     public void setId(int id) {
@@ -62,7 +71,15 @@ public class User {
         this.password = password;
     }
 
-    public void setRemoved(boolean removed) {
-        this.removed = removed;
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public UserRole getRole() {
+        return role;
     }
 }

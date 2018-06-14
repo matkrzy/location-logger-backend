@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 
@@ -50,7 +51,7 @@ public class UserController {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 errors.put("username", "User already exists. Please provide another username");
                 response.addFieldtoResponse("errors", errors);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 System.out.print(ex.toString());
             }
 
@@ -74,10 +75,7 @@ public class UserController {
         User user = userRepository.findByUsername(username);
 
         if (user != null) {
-            response.setStatus(HttpStatus.OK);
-            response.addFieldtoResponse("username", user.getUsername());
-            response.addFieldtoResponse("id", user.getId());
-            response.addFieldtoResponse("removed", user.isRemoved());
+            return new ResponseEntity(user, HttpStatus.OK);
         } else {
             response.setMessageError("Cannot identify user");
         }
@@ -85,6 +83,37 @@ public class UserController {
         return response.getResponseAsResponseEntity();
     }
 
+    @PutMapping(path = "/{id}", produces = "application/json; charset=utf-8")
+    public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody User user) {
+
+        User updatable = this.userRepository.findById(id);
+
+        updatable.setActive(user.isActive());
+        updatable.setUsername(user.getUsername());
+        updatable.setRole(user.getRole());
+
+        updatable = this.userRepository.save(updatable);
+
+        if (updatable != null) {
+            return new ResponseEntity(updatable, HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Transactional
+    @DeleteMapping(path = "/{id}", produces = "application/json; charset=utf-8")
+    public ResponseEntity<?> deleteUser(@PathVariable int id) {
+
+        if (this.userRepository.removeById(id) == 1) {
+            return new ResponseEntity(HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(UserController.class, args);
