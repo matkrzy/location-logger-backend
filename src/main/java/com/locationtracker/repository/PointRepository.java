@@ -9,6 +9,4 @@ public interface PointRepository extends CrudRepository<Point,Long> {
     List<Point> findAllByTrackId(int id);
 
     Integer removeAllByTrackId(int id);
-
-    Point findDistinctTopByTrackId(int id);
 }
