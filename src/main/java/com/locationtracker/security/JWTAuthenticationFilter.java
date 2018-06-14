@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -75,7 +76,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             responseObject.put("id", user.getId());
             responseObject.put("username", user.getUsername());
-            responseObject.put("removed", user.isRemoved());
+            responseObject.put("active", user.isActive());
+            responseObject.put("role",AuthorityUtils.createAuthorityList(user.getRole().toString()));
             responseObject.put("token", token);
 
         }catch (Exception e){
