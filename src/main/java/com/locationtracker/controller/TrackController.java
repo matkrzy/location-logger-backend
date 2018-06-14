@@ -112,12 +112,14 @@ public class TrackController {
         String username = auth.getPrincipal().toString();
         User user = userRepository.findByUsername(username);
 
-        if (track.getUserId() == user.getId() && track.getId() == id) {
+        Track compareTrack = trackRepository.findById(track.getId());
+
+        if (track.getUserId() == user.getId() && track.getId() == id && compareTrack.getId() == id && compareTrack.getId() == track.getId()) {
             Track saved = trackRepository.save(track);
             return new ResponseEntity(saved, HttpStatus.OK);
 
         } else {
-            response.setMessageError("User id mismatch!");
+            response.setMessageError("Track details mismatch!");
             return response.getResponseAsResponseEntity();
         }
     }
