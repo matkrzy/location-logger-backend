@@ -203,13 +203,13 @@ public class TrackController {
         User user = userRepository.findByUsername(username);
 
         Track track = trackRepository.findById(id);
-        Point point = pointRepository.findDistinctTopByTrackId(id);
+        List<Point> points = pointRepository.findAllByTrackId(id);
 
-        if(track == null || point == null || user.getId() != track.getUserId()){
+        if(track == null || points == null || user.getId() != track.getUserId()){
             response.setMessageError("An error occurred");
             return response.getResponseAsResponseEntity();
         }else{
-            return new ResponseEntity(point,HttpStatus.OK);
+            return new ResponseEntity(points.get(points.size()-1),HttpStatus.OK);
         }
     }
 
