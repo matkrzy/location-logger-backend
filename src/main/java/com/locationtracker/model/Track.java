@@ -1,5 +1,6 @@
 package com.locationtracker.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Track {
 
     private Double distance;
 
+    @JsonFormat(pattern="H:mm")
     @Temporal(TemporalType.TIME)
     @Column(name = "duration", columnDefinition = "TIME")
     private Date duration;
