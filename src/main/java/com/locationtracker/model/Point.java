@@ -3,6 +3,8 @@ package com.locationtracker.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -12,6 +14,8 @@ public class Point {
     @JsonIgnore
     private Long id;
 
+    @NotNull
+    @Min(0)
     @Column(name = "track_id")
     private int trackId;
 
@@ -27,8 +31,10 @@ public class Point {
 
     private Double altitude = 0.0;
 
+    @Min(0)
     private Double speed;
 
+    @Min(0)
     private Double distance;
 
     @Temporal(TemporalType.TIME)
