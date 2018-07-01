@@ -12,6 +12,8 @@ public interface DeviceRepository extends CrudRepository<Device, Long> {
 
     Device findById(int id);
 
+    Device findByUuid(String uuid);
+
     Device save(Device device);
 
 }

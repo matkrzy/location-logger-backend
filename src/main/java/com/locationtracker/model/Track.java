@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -17,9 +19,13 @@ public class Track {
 
     private String name;
 
+    @NotNull
+    @Min(0)
     @Column(name = "user_id")
     private int userId;
 
+    @NotNull
+    @Min(0)
     @Column(name = "device_id")
     private int deviceId;
 
@@ -29,6 +35,7 @@ public class Track {
     @Column(name = "date", columnDefinition = "DATETIME")
     private Date date;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     private Double distance;
 
@@ -45,26 +52,32 @@ public class Track {
     @Column(name = "end_time", columnDefinition = "DATETIME")
     private Date endTime;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     @Column(name = "min_speed")
     private Double minSpeed;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     @Column(name = "max_speed")
     private Double maxSpeed;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     @Column(name = "avg_speed")
     private Double avgSpeed;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     @Column(name = "min_altitude")
     private Double minAltitude;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     @Column(name = "max_altitude")
     private Double maxAltitude;
 
+    @Min(0)
     @NumberFormat(pattern="#.##")
     @Column(name = "avg_altitude")
     private Double avgAltitude;

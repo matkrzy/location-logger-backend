@@ -1,11 +1,14 @@
 package com.locationtracker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.locationtracker.model.Device;
 import com.locationtracker.model.Point;
 import com.locationtracker.model.Track;
 import com.locationtracker.model.User;
+import com.locationtracker.repository.DeviceRepository;
 import com.locationtracker.repository.PointRepository;
 import com.locationtracker.repository.UserRepository;
+import com.locationtracker.service.TracksService;
 import com.locationtracker.utils.JsonResponse;
 import com.locationtracker.utils.Utils;
 import org.codehaus.jettison.json.JSONArray;
@@ -23,7 +26,7 @@ import com.locationtracker.repository.TrackRepository;
 import javax.transaction.Transactional;
 import java.util.*;
 
-@Controller
+@RestController
 @RequestMapping(path = "/track")
 public class TrackController {
     @Autowired
@@ -34,6 +37,12 @@ public class TrackController {
 
     @Autowired
     public UserRepository userRepository;
+
+    @Autowired
+    public DeviceRepository deviceRepository;
+
+    @Autowired
+    public TracksService tracksService;
 
     @GetMapping(path = "/{id}", produces = "application/json; charset=utf-8")
     public @ResponseBody
@@ -98,6 +107,7 @@ public class TrackController {
         }
     }
 
+    @Transactional
     @PutMapping(path = "/{id}", produces = "application/json; charset=utf-8")
     public @ResponseBody
     ResponseEntity<?> updateTrack(@RequestBody Track track, @PathVariable int id, final BindingResult bindingResult, Authentication auth) {
@@ -165,10 +175,22 @@ public class TrackController {
         }
     }
 
-    @PostMapping(path = "/{id}/points", produces = "application/json; charset=utf-8")
+    @PostMapping(path = "/{id}/point", produces = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity<?> addPointToTrack(@PathVariable int id, @RequestBody Point point, final BindingResult bindingResult, Authentication auth) {
+    ResponseEntity<?> addPointToTrack(
+            @RequestHeader("Device-uuid") String uuid,
+            @PathVariable int id,
+            @RequestBody Point point,
+            final BindingResult bindingResult,
+            Authentication auth) {
         JsonResponse response = new JsonResponse();
+
+        Device device = deviceRepository.findByUuid(uuid);
+
+        if(device == null){
+            response.setMessageError("Device uuid mismatch");
+            return response.getResponseAsResponseEntity();
+        }
 
         if (bindingResult.hasErrors()) {
             response.setErrorsForm(bindingResult);
@@ -180,6 +202,11 @@ public class TrackController {
         User user = userRepository.findByUsername(username);
         Track track = trackRepository.findById(id);
 
+        if(track==null){
+            response.setMessageError("Track does not exist");
+            return response.getResponseAsResponseEntity();
+        }
+
         if (track.getUserId() != user.getId()) {
             response.setMessageError("You are not owner of this track");
             return response.getResponseAsResponseEntity();
@@ -189,6 +216,58 @@ public class TrackController {
         } else {
             point.setTrackId(id);
             pointRepository.save(point);
+            return new ResponseEntity(null, HttpStatus.CREATED);
+        }
+
+    }
+
+    @PostMapping(path = "/{id}/points", produces = "application/json; charset=utf-8")
+    public @ResponseBody
+    ResponseEntity<?> addPointsToTrack(
+            @RequestHeader("Device-uuid") String uuid,
+            @PathVariable int id,
+            @RequestBody List<Point> points,
+            final BindingResult bindingResult,
+            Authentication auth) {
+        JsonResponse response = new JsonResponse();
+
+        Device device = deviceRepository.findByUuid(uuid);
+
+        if(device == null){
+            response.setMessageError("Device uuid mismatch");
+            return response.getResponseAsResponseEntity();
+        }
+
+        if (bindingResult.hasErrors()) {
+            response.setErrorsForm(bindingResult);
+
+            return response.getResponseAsResponseEntity();
+        }
+
+        String username = auth.getPrincipal().toString();
+        User user = userRepository.findByUsername(username);
+        Track track = trackRepository.findById(id);
+
+        if(track==null){
+            response.setMessageError("Track does not exist");
+            return response.getResponseAsResponseEntity();
+        }
+
+        if (track.getUserId() != user.getId()) {
+            response.setMessageError("You are not owner of this track");
+            return response.getResponseAsResponseEntity();
+        } else if (track.isRemoved()) {
+            response.setMessageError("Track is removed");
+            return response.getResponseAsResponseEntity();
+        } else {
+
+            for (Point point : points) {
+                point.setTrackId(id);
+                pointRepository.save(point);
+            }
+
+            tracksService.updateTrackSummary(track);
+
             return new ResponseEntity(null, HttpStatus.CREATED);
         }
 
@@ -205,11 +284,11 @@ public class TrackController {
         Track track = trackRepository.findById(id);
         List<Point> points = pointRepository.findAllByTrackId(id);
 
-        if(track == null || points == null || user.getId() != track.getUserId()){
+        if (track == null || points == null || user.getId() != track.getUserId()) {
             response.setMessageError("An error occurred");
             return response.getResponseAsResponseEntity();
-        }else{
-            return new ResponseEntity(points.get(points.size()-1),HttpStatus.OK);
+        } else {
+            return new ResponseEntity(points.get(points.size() - 1), HttpStatus.OK);
         }
     }
 
