@@ -32,7 +32,7 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "role", columnDefinition="enum('USER','ADMIN')")
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     public User(){};
 
