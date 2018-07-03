@@ -94,17 +94,10 @@ public class TrackController {
             return response.getResponseAsResponseEntity();
         }
 
-        String username = auth.getPrincipal().toString();
-        User user = userRepository.findByUsername(username);
 
-        if (track.getUserId() == user.getId()) {
-            Track saved = trackRepository.save(track);
-            return new ResponseEntity(saved, HttpStatus.CREATED);
+        Track saved = trackRepository.save(track);
+        return new ResponseEntity(saved, HttpStatus.CREATED);
 
-        } else {
-            response.setMessageError("User id mismatch!");
-            return response.getResponseAsResponseEntity();
-        }
     }
 
     @Transactional
@@ -266,7 +259,8 @@ public class TrackController {
                 pointRepository.save(point);
             }
 
-            tracksService.updateTrackSummary(track);
+            Track updated = tracksService.updateTrackSummary(track);
+            trackRepository.save(updated);
 
             return new ResponseEntity(null, HttpStatus.CREATED);
         }
