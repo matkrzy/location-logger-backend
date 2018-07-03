@@ -27,9 +27,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private boolean active;
+    private boolean active = true;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "role", columnDefinition="enum('USER','ADMIN')")
     private UserRole role = UserRole.USER;
