@@ -124,6 +124,27 @@ public class TracksService {
     public Track updateTrackSummary(Track track){
         List<Point> trackPoints = pointRepository.findAllByTrackId(track.getId());
 
+        Point prevPoint = null;
+        Point firstPoint = null;
+        for (int i = 0; i < trackPoints.size(); i++) {
+            Point point = trackPoints.get(i);
+
+            point.setDuration(utils.getTimeDiffInMinutes(point, point));
+
+            if (i > 0) {
+                Double distance = utils.getDistance(prevPoint, point);
+                point.setDistance(distance);
+                point.setDuration(utils.getTimeDiffInMinutes(firstPoint, point));
+            } else {
+                point.setDistance(0.0);
+                firstPoint = point;
+            }
+
+            pointRepository.save(point);
+
+            prevPoint = point;
+        }
+
         Point startPoint = trackPoints.get(0);
         Point endPoint = trackPoints.get(trackPoints.size() - 1);
 
