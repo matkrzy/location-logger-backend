@@ -13,21 +13,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableJpaAuditing
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class LocationtrackerApplication {
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public TracksService tracksService() {
-		return new TracksService();
-	}
+    @Bean
+    public TracksService tracksService() {
+        return new TracksService();
+    }
 
 
-	public static void main(String[] args) {
-		SpringApplication.run(LocationtrackerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        System.setProperty("user.timezone", "UTC");
+
+        SpringApplication.run(LocationtrackerApplication.class, args);
+    }
 }

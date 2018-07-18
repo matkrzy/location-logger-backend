@@ -83,27 +83,13 @@ public class TracksService {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 
-            Point prevPoint = null;
-            Point firstPoint = null;
             for (int i = 0; i < pointsArray.length(); i++) {
                 JSONObject point = pointsArray.getJSONObject(i);
 
                 Point mappedPoint = objectMapper.readValue(point.toString(), Point.class);
                 mappedPoint.setTrackId(track.getId());
-                mappedPoint.setDuration(utils.getTimeDiffInMinutes(mappedPoint, mappedPoint));
-
-                if (i > 0) {
-                    Double distance = utils.getDistance(prevPoint, mappedPoint);
-                    mappedPoint.setDistance(distance);
-                    mappedPoint.setDuration(utils.getTimeDiffInMinutes(firstPoint, mappedPoint));
-                } else {
-                    mappedPoint.setDistance(0.0);
-                    firstPoint = mappedPoint;
-                }
-
                 pointRepository.save(mappedPoint);
 
-                prevPoint = mappedPoint;
             }
         } catch (Exception e) {
             System.out.print(e.toString());
@@ -129,12 +115,12 @@ public class TracksService {
         for (int i = 0; i < trackPoints.size(); i++) {
             Point point = trackPoints.get(i);
 
-            point.setDuration(utils.getTimeDiffInMinutes(point, point));
+            point.setDuration(utils.getTimeDiff(point, point));
 
             if (i > 0) {
                 Double distance = utils.getDistance(prevPoint, point);
                 point.setDistance(distance);
-                point.setDuration(utils.getTimeDiffInMinutes(firstPoint, point));
+                point.setDuration(utils.getTimeDiff(firstPoint, point));
             } else {
                 point.setDistance(0.0);
                 firstPoint = point;
@@ -182,7 +168,7 @@ public class TracksService {
 
         track.setDistance(distance);
 
-        track.setDuration(utils.getTimeDiffInMinutes(startPoint, endPoint));
+        track.setDuration(utils.getTimeDiff(startPoint, endPoint));
 
         return track;
     }

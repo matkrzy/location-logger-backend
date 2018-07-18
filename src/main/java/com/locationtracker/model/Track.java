@@ -2,11 +2,15 @@ package com.locationtracker.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -20,12 +24,10 @@ public class Track {
     private String name;
 
     @NotNull
-    @Min(0)
     @Column(name = "user_id")
     private int userId;
 
     @NotNull
-    @Min(0)
     @Column(name = "device_id")
     private int deviceId;
 
@@ -39,10 +41,10 @@ public class Track {
     @NumberFormat(pattern="#.##")
     private Double distance;
 
+    @JsonSerialize(using = LocalTimeSerializer.class)
     @JsonFormat(pattern="H:mm")
-    @Temporal(TemporalType.TIME)
     @Column(name = "duration", columnDefinition = "TIME")
-    private Date duration;
+    private LocalTime duration;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_time", columnDefinition = "DATETIME")
@@ -118,7 +120,7 @@ public class Track {
         return distance;
     }
 
-    public Date getDuration() {
+    public LocalTime getDuration() {
         return duration;
     }
 
@@ -174,7 +176,7 @@ public class Track {
         this.distance = distance;
     }
 
-    public void setDuration(Date duration) {
+    public void setDuration(LocalTime duration) {
         this.duration = duration;
     }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -37,9 +38,8 @@ public class Point {
     @Min(0)
     private Double distance;
 
-    @Temporal(TemporalType.TIME)
     @Column(name = "duration", columnDefinition = "TIME")
-    private Date duration;
+    private LocalTime duration;
 
     public Point() {
     }
@@ -76,7 +76,7 @@ public class Point {
         return distance;
     }
 
-    public Date getDuration() {
+    public LocalTime getDuration() {
         return duration;
     }
 
@@ -88,7 +88,7 @@ public class Point {
         this.distance = distance;
     }
 
-    public void setDuration(Date duration) {
+    public void setDuration(LocalTime duration) {
         this.duration = duration;
     }
 }

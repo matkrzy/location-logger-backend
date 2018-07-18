@@ -3,10 +3,13 @@ package com.locationtracker.utils;
 import com.locationtracker.model.Point;
 import com.locationtracker.model.User;
 import com.locationtracker.repository.UserRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Service
@@ -46,14 +49,15 @@ public class Utils {
         return d;
     }
 
-    public Date getTimeDiffInMinutes(Point start, Point end) {
+    public LocalTime getTimeDiff(Point start, Point end) {
 
-        long diff = end.getTimestamp().getTime() - start.getTimestamp().getTime();
-        long timeZoneOffset = 3600000;
-        Date d = new Date();
-        d.setTime(diff - timeZoneOffset);
+        LocalTime endTimesamp = LocalTime.of(end.getTimestamp().getHours(), end.getTimestamp().getMinutes(), end.getTimestamp().getSeconds());
+        LocalTime startTimestam = LocalTime.of(start.getTimestamp().getHours(), start.getTimestamp().getMinutes(), start.getTimestamp().getSeconds());
 
-        return d;
+        endTimesamp = endTimesamp.minusHours(startTimestam.getHour());
+        endTimesamp = endTimesamp.minusMinutes(startTimestam.getMinute());
+        endTimesamp = endTimesamp.minusSeconds(startTimestam.getSecond());
+        return endTimesamp;
     }
 
     public Date getTimeDiffInMinutes(Point start, Point end, Point add) {
