@@ -68,7 +68,7 @@ public class TracksService {
             response.setMessageError("Error during track creation");
         }
 
-
+        JSONArray pointsArray = null;
         try {
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 
@@ -78,24 +78,13 @@ public class TracksService {
             }
 
             JSONObject jsonObj = new JSONObject(text);
-            JSONArray pointsArray = jsonObj.getJSONArray("points");
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            pointsArray = jsonObj.getJSONArray("points");
 
-
-            for (int i = 0; i < pointsArray.length(); i++) {
-                JSONObject point = pointsArray.getJSONObject(i);
-
-                Point mappedPoint = objectMapper.readValue(point.toString(), Point.class);
-                mappedPoint.setTrackId(track.getId());
-                pointRepository.save(mappedPoint);
-
-            }
         } catch (Exception e) {
             System.out.print(e.toString());
         }
 
-        track = this.updateTrackSummary(track);
+        track = this.updateTrackSummary(track,pointsArray);
         track = trackRepository.save(track);
 
         if (track != null) {
@@ -130,6 +119,81 @@ public class TracksService {
 
             prevPoint = point;
         }
+
+        Point startPoint = trackPoints.get(0);
+        Point endPoint = trackPoints.get(trackPoints.size() - 1);
+
+        Point maxSpeed = Collections.max(trackPoints, Comparator.comparingDouble(Point::getSpeed));
+        Double minSpeed = trackPoints.stream().filter(p -> p.getSpeed() > 0.0).mapToDouble(p -> p.getSpeed()).min().orElse(0);
+
+
+        Double avgSpeed = trackPoints.stream()
+                .mapToDouble(p -> p.getSpeed())
+                .average()
+                .orElse(0);
+
+        Point maxAltitude = Collections.max(trackPoints, Comparator.comparingDouble(Point::getAltitude));
+        Double minAltitude = trackPoints.stream().filter(p -> p.getAltitude() > 0.0).mapToDouble(p -> p.getAltitude()).min().orElse(0);
+
+        Double avgAltitude = trackPoints.stream()
+                .mapToDouble(p -> p.getAltitude())
+                .average()
+                .orElse(0);
+
+        Double distance = trackPoints.stream().mapToDouble(Point::getDistance).sum();
+
+
+        track.setDate(startPoint.getTimestamp());
+        track.setStartTime(startPoint.getTimestamp());
+        track.setEndTime(endPoint.getTimestamp());
+
+        track.setMinSpeed(minSpeed);
+        track.setMaxSpeed(maxSpeed.getSpeed());
+        track.setAvgSpeed(avgSpeed);
+
+        track.setMinAltitude(minAltitude);
+        track.setMaxAltitude(maxAltitude.getAltitude());
+        track.setAvgAltitude(avgAltitude);
+
+        track.setDistance(distance);
+
+        track.setDuration(utils.getTimeDiff(startPoint, endPoint));
+
+        return track;
+    }
+
+    public Track updateTrackSummary(Track track, JSONArray pointsArray){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        Point prevPoint = null;
+        Point firstPoint = null;
+        for (int i = 0; i < pointsArray.length(); i++) {
+            try {
+                JSONObject mappedPoint = pointsArray.getJSONObject(i);
+                Point point = objectMapper.readValue(mappedPoint.toString(), Point.class);
+                point.setTrackId(track.getId());
+
+                point.setDuration(utils.getTimeDiff(point, point));
+
+                if (i > 0) {
+                    Double distance = utils.getDistance(prevPoint, point);
+                    point.setDistance(distance);
+                    point.setDuration(utils.getTimeDiff(firstPoint, point));
+                } else {
+                    point.setDistance(0.0);
+                    firstPoint = point;
+                }
+
+                pointRepository.save(point);
+
+                prevPoint = point;
+            }catch(Exception e){
+
+            }
+        }
+
+        List<Point> trackPoints = pointRepository.findAllByTrackId(track.getId());
 
         Point startPoint = trackPoints.get(0);
         Point endPoint = trackPoints.get(trackPoints.size() - 1);
